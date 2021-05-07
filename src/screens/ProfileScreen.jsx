@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useRef, useContext } from 'react';
 import {
-  View, Dimensions, Text, StyleSheet
+  StyleSheet, Animated,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import SafeAreaView from 'react-native-safe-area-view';
+import AnimatedHeader from '../utils/AnimatedHeader';
+import { UserDataContext } from '../contexts/UserDataContext';
+import ImageCard from '../utils/ImageCard';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,10 +18,15 @@ const styles = StyleSheet.create({
 });
 
 function ProfileScreen() {
+  const offset = useRef(new Animated.Value(0)).current;
+  const { userDetails } = useContext(UserDataContext);
+
   return (
-    <View style={styles}>
-      <Text>ProfileScreen</Text>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
+        <AnimatedHeader animatedValue={offset} title={userDetails.invites.profiles[0].general_information.first_name} />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 

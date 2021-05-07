@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
-  View, Dimensions, Text, StyleSheet
+  StyleSheet, Animated,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import SafeAreaView from 'react-native-safe-area-view';
+import AnimatedHeader from '../utils/AnimatedHeader';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,10 +16,14 @@ const styles = StyleSheet.create({
 });
 
 function MatchesScreen() {
+  const offset = useRef(new Animated.Value(0)).current;
+
   return (
-    <View style={styles}>
-      <Text>MatchesScreen</Text>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
+        <AnimatedHeader animatedValue={offset} title="Matches" />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 
