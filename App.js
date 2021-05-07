@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, Image, View } from 'react-native';
+import { Badge } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { useFonts } from 'expo-font';
@@ -10,6 +11,7 @@ import DiscoverScreen from './src/screens/DiscoverScreen';
 import NotesScreen from './src/screens/NotesScreen';
 import MatchesScreen from './src/screens/MatchesScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import { UserDataProvider } from './src/contexts/UserDataContext';
 
 export default function App() {
   const [loaded] = useFonts({
@@ -19,28 +21,6 @@ export default function App() {
   });
   const Stack = createStackNavigator();
   const Tab = createMaterialBottomTabNavigator();
-
-  function getHeaderTitle(route) {
-    const routeName = getFocusedRouteNameFromRoute(route) ?? 'Discover';
-
-    switch (routeName) {
-      case 'Discover': {
-        return 'Discover';
-      }
-      case 'Notes': {
-        return 'Notes';
-      }
-      case 'Matches': {
-        return 'Matches';
-      }
-      case 'Profile': {
-        return 'Profile';
-      }
-      default: {
-        return 'Model & Color';
-      }
-    }
-  }
 
   function Home() {
     return (
@@ -55,6 +35,12 @@ export default function App() {
           component={DiscoverScreen}
           options={{
             tabBarLabel: <Text style={{ fontFamily: 'GilroyRegular' }}>Discover</Text>,
+            tabBarIcon: ({ color }) => (
+              <Image
+                source={require('./assets/discover-1.png')}
+                style={{ tintColor: color }}
+              />
+            ),
           }}
         />
         <Tab.Screen
@@ -62,6 +48,17 @@ export default function App() {
           component={NotesScreen}
           options={{
             tabBarLabel: <Text style={{ fontFamily: 'GilroyRegular' }}>Notes</Text>,
+            tabBarIcon: ({ color }) => (
+              <View>
+                <Image
+                  source={require('./assets/notes-1.png')}
+                  style={{ tintColor: color }}
+                />
+                <Badge style={{ position: 'absolute', top: -7, right: -10, backgroundColor: '#8c5cfb' }} size={15}>
+                  <Text style={{ fontFamily: 'GilroyBold' }}>2</Text>
+                </Badge>
+              </View>
+            ),
           }}
         />
         <Tab.Screen
@@ -69,6 +66,12 @@ export default function App() {
           component={MatchesScreen}
           options={{
             tabBarLabel: <Text style={{ fontFamily: 'GilroyRegular' }}>Matches</Text>,
+            tabBarIcon: ({ color }) => (
+              <Image
+                source={require('./assets/matches-1.png')}
+                style={{ tintColor: color }}
+              />
+            ),
           }}
         />
         <Tab.Screen
@@ -76,6 +79,12 @@ export default function App() {
           component={ProfileScreen}
           options={{
             tabBarLabel: <Text style={{ fontFamily: 'GilroyRegular' }}>Profile</Text>,
+            tabBarIcon: ({ color }) => (
+              <Image
+                source={require('./assets/profile-1.png')}
+                style={{ tintColor: color }}
+              />
+            ),
           }}
         />
       </Tab.Navigator>
@@ -84,24 +93,22 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        {loaded && (
-          <Stack.Navigator initialRouteName="On Boarding">
-            <Stack.Screen name="On Boarding" component={OnBoardingScreen} options={{ headerShown: false }} />
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={({ route }) => ({
-                headerTitle: getHeaderTitle(route),
-                headerLeft: null,
-                headerTitleStyle: {
-                  fontFamily: 'GilroySemiBold',
-                },
-              })}
-            />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+      <UserDataProvider>
+        <NavigationContainer>
+          {loaded && (
+            <Stack.Navigator initialRouteName="On Boarding">
+              <Stack.Screen name="On Boarding" component={OnBoardingScreen} options={{ headerShown: false }} />
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={() => ({
+                  headerShown: false
+                })}
+              />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </UserDataProvider>
     </SafeAreaProvider>
   );
 }
