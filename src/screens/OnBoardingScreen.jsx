@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
 });
 
 function OnBoardingScreen({ navigation }) {
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [otpNumber, setOtpNumber] = useState();
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [otpNumber, setOtpNumber] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
 
   return (

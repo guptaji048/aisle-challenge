@@ -19,7 +19,6 @@ export const UserDataProvider = (props) => {
       fetch('https://testa2.aisle.co/V1/users/test_profile_list', requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           setUserDetails(data);
         }).catch((err) => {
           console.log(err);
