@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Dimensions, Text, StyleSheet, TextInput, View,
 } from 'react-native';
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
 function OtpInputForm({ otpNumber, setOtpNumber, phoneNumber, setOtpSent, navigation }) {
 
   const { setUserToken } = useContext(UserDataContext);
+  const [timerCount, setTimer] = useState(60);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -38,12 +40,28 @@ function OtpInputForm({ otpNumber, setOtpNumber, phoneNumber, setOtpSent, naviga
     fetch('https://testa2.aisle.co/V1/users/verify_otp', requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        setUserToken(data.token);
-        navigation.push('Home');
+        if (data.token) {
+          setUserToken(data.token);
+          navigation.push('Home');
+          setOtpNumber(null);
+          setOtpSent(false);
+        }
       }).catch((err) => {
         console.log(err);
       })
-  }
+  };
+
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (timerCount !== 0) {
+        setTimer(lastTimerCount => {
+          lastTimerCount <= 1 && clearInterval(interval)
+          return lastTimerCount - 1
+        })
+      }
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [timerCount]);
 
   return (
     <React.Fragment>
@@ -56,7 +74,7 @@ function OtpInputForm({ otpNumber, setOtpNumber, phoneNumber, setOtpSent, naviga
           onPress={() => setOtpSent(false)}
         />
       </View>
-      <Text style={{ fontFamily: 'GilroyBold', fontSize: 42, paddingBottom: 12 }}>Enter The {"\n"} OTP</Text>
+      <Text style={{ fontFamily: 'GilroyBold', fontSize: 42, paddingBottom: 12 }}>Enter The {"\n"}OTP</Text>
       <TextInput
         value={otpNumber}
         onChangeText={(e) => setOtpNumber(e)}
@@ -64,16 +82,40 @@ function OtpInputForm({ otpNumber, setOtpNumber, phoneNumber, setOtpSent, naviga
         textAlign="center"
         style={[styles.textInput, { width: Dimensions.get('window').width * 0.35 }]}
         fontFamily="GilroySemiBold"
+        error
       />
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={(e) => handleClick(e)}
-      >
-        <Text style={{ fontFamily: 'GilroySemiBold', fontSize: 17, color: 'black', textTransform: 'none' }}>Continue</Text>
-      </Button>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Button
+          mode="contained"
+          style={styles.button}
+          onPress={(e) => handleClick(e)}
+        >
+          <Text style={{ fontFamily: 'GilroySemiBold', fontSize: 17, color: 'black', textTransform: 'none' }}>Continue</Text>
+        </Button>
+        {timerCount === 0 ?
+          (
+            <Button onPress={() => setTimer(60)}>
+              <Text style={{ fontFamily: 'GilroySemiBold', fontSize: 16, color: '#f9cb10', textTransform: 'none' }}>Send Again</Text>
+            </Button>
+          )
+          :
+          (
+            <Text style={{ fontFamily: 'GilroySemiBold', fontSize: 18, paddingLeft: 12 }}>
+              {timerCount < 10 ? `00:0${timerCount}` : `00:${timerCount}`}
+            </Text>
+          )
+        }
+      </View>
     </React.Fragment>
   )
+}
+
+OtpInputForm.propTypes = {
+  otpNumber: PropTypes.number.isRequired,
+  setOtpNumber: PropTypes.func.isRequired,
+  phoneNumber: PropTypes.number.isRequired,
+  setOtpSent: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 }
 
 export default OtpInputForm;
