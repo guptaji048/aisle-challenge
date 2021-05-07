@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   View, Dimensions, Text, StyleSheet, TextInput
 } from 'react-native';
@@ -66,5 +67,11 @@ function PhoneInputForm({ phoneNumber, setPhoneNumber, setOtpSent }) {
     </React.Fragment>
   )
 }
+
+PhoneInputForm.propTypes = {
+  phoneNumber: PropTypes.number,
+  setPhoneNumber: PropTypes.func.isRequired,
+  setOtpSent: PropTypes.func.isRequired,
+};
 
 export default PhoneInputForm;
