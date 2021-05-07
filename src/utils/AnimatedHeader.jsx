@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Animated, View, Text, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const HEADER_HEIGHT = Dimensions.get('window').height * 0.2;
+const HEADER_HEIGHT = Dimensions.get('window').height * 0.15;
 
 const AnimatedHeader = ({ animatedValue, title }) => {
   const insets = useSafeAreaInsets();
@@ -21,14 +22,19 @@ const AnimatedHeader = ({ animatedValue, title }) => {
         zIndex: 10,
         height: headerHeight,
         backgroundColor: 'white',
-        color: 'black'
+        color: 'black',
       }}
     >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-        <Text style={{ fontFamily: 'GilroyBold', fontSize: 26 }}>{title}</Text>
+      <View style={{ marginVertical: 10, alignItems: 'center', position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+        <Text style={{ fontFamily: 'GilroyBold', fontSize: 28 }}>{title}</Text>
       </View>
     </Animated.View>
   );
+};
+
+AnimatedHeader.propTypes = {
+  animatedValue: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default AnimatedHeader;
